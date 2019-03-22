@@ -1,3 +1,9 @@
+### Files and directory 
+
+*.zip 
+*.csv 
+**/data 
+
 ###
 # For Rstat 
 ###
