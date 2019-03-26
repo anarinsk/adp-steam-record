@@ -2,7 +2,7 @@
 
 *.zip 
 *.csv 
-**/data 
+#**/data 
 
 ###
 # For Rstat 

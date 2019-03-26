@@ -10,8 +10,9 @@ output:
 ---
 
 ```{r include=FALSE}
-#here::here()
+here::here()
 source('code_rmd.R')
+#
 ```
 
 # Summary 
@@ -81,7 +82,7 @@ In conclusion, STEAM as the platform only for collecting games is not an adequat
 
 In exploring data interesting one is found. For the top 20 adopted games, distribution of (log-transformed) play time is plotted. Some games have an extremely long tail, which means that most or considerable proportion of their players play heavily. Specifically, "Counter-Strike: Global Offensive", "The Elder Scrolls V Skyrim", "Sid Meiser's Civilization V" are among them.
 
-```{r fig.height=12, fig.width=12, message=FALSE, warning=FALSE, paged.print=FALSE}
+```{r fig.height=12, fig.width=12, message=FALSE, warning=FALSE, echo=FALSE}
 dfa %>% count(title, sort=T) %>% slice(1:20) %>% mutate(rank=row_number()) %>% select(-n) -> title_top
 
 dfa %>% 
@@ -101,14 +102,14 @@ Tables for the top 20 titles and players are as follows:
 
 ## Play time by individual players 
 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE, echo=FALSE}
 df_id %>% arrange(desc(total_time)) %>% slice(1:20) %>% select(-id) %>% 
   kable() %>% kable_styling()
 ```
 
 
 ## Adoption by individual players 
-```{r echo=FALSE, message=FALSE, warning=FALSE}
+```{r echo=FALSE, message=FALSE, warning=FALSE, echo=FALSE}
 df_id %>% arrange(desc(n_purchased)) %>% slice(1:20) %>% select(-id) %>% 
   kable() %>% kable_styling()
 ```
@@ -116,7 +117,7 @@ df_id %>% arrange(desc(n_purchased)) %>% slice(1:20) %>% select(-id) %>%
 
 ## Play time by titles 
 
-```{r message=FALSE, warning=FALSE}
+```{r message=FALSE, warning=FALSE, echo=FALSE}
 df_title %>% arrange(desc(time)) %>% slice(1:20) %>% 
   mutate(sh_time = percent(sh_time)) %>% 
   kable() %>% kable_styling()
