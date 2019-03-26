@@ -1,6 +1,6 @@
 ---
 title: "Analysis of the Adoption and Playing on STEAM"
-date: "2019-03-36 (current version in `r format(Sys.time(), '%Y-%b\\\\-%d\\\\')`)"
+date: "2019-03-26 (current version in `r format(Sys.time(), '%Y-%m-%d')`)"
 author: Jun-Sok Huhh (anarinsk@gmail)
 output:
   html_document:
@@ -104,6 +104,9 @@ Tables for the top 20 titles and players are as follows:
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, echo=FALSE}
 df_id %>% arrange(desc(total_time)) %>% slice(1:20) %>% select(-id) %>% 
+  mutate(id = row_number(), 
+         sh_play = percent(sh_play)) %>% 
+  select(id, everything()) %>% 
   kable() %>% kable_styling()
 ```
 
@@ -111,6 +114,9 @@ df_id %>% arrange(desc(total_time)) %>% slice(1:20) %>% select(-id) %>%
 ## Adoption by individual players 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, echo=FALSE}
 df_id %>% arrange(desc(n_purchased)) %>% slice(1:20) %>% select(-id) %>% 
+  mutate(id = row_number(), 
+         sh_play = percent(sh_play)) %>% 
+  select(id, everything()) %>%  
   kable() %>% kable_styling()
 ```
 
