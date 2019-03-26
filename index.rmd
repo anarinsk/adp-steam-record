@@ -1,0 +1,123 @@
+---
+title: "Analysis of the Adoption and Playing on STEAM"
+date: "2019-03-36 (current version in `r format(Sys.time(), '%Y-%b\\\\-%d\\\\')`)"
+author: Jun-Sok Huhh (anarinsk@gmail)
+output:
+  html_document:
+    theme: sandstone
+    toc: true
+    toc_float: true
+---
+
+```{r include=FALSE}
+#here::here()
+source('code_rmd.R')
+```
+
+# Summary 
+
+- STEAM is not a platform only for collecting games as some assert. This impression may come from personal selective memory of such a behavior. 
+- "DOTA 2" occupies around 28% of total play time of STEAM users, which occupies the biggest share in our data. 
+- Some titles such as "Counter-strike Global Offensive" has an extremely 'long tail' in the distribution of playing time. 
+
+# STEAM: Platform only for collecting? 
+
+From time to time, I heard that STEAM is not a platform for playing games, but only for collecting." That is, they buy games at STEAM, but do not play most of the games adopted. I also have some collection in STEAM that has not been played for a single time. I wonder if this is really a general behavior among STEAM users?
+I found a related data set in [Keggle](https://www.kaggle.com/tamber/steam-video-games). The data set may not be strongly reliable because details on data generation are not provided. For example, the observational range for the data is not specified. "Battle Ground", recent one of the most popular titles, is not included in data. However, as of now, the data set is the best one that can be collected for me.
+
+## Basic stats 
+
+Before exploring the main question, data is reorganized by titles and by individual players.
+
+### By Titles
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+thefunction <- function(x){ get_unitsummary(df_title, x) }
+
+c("n_purchased", "time") %>% map_df(thefunction) %>% kable() %>% kable_styling()
+```
+
+
+The above table shows that distribution of sales and playing time by title is very skewed to 0. That is, a small number of titles occupy most of the adoption and play time of users. Consult below two figures. 
+
+```{r echo=FALSE, fig.height=4, fig.width=10, message=FALSE, warning=FALSE, paged.print=FALSE}
+p1 <- plot_hist(n_purchased, df_id, logten=T, "Dist. of Adoption by Individual Players")
+p2 <- plot_hist(total_time, df_id, logten=T, "Dist. of Playing Time by Individual Players")
+
+p1 + p2
+```
+
+
+### By individual players 
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+c("n_purchased", "n_played", "total_time", "sh_play") %>% 
+  map_df(function(x){get_unitsummary(df_id, x)}) %>% kable() %>% kable_styling()
+```
+
+Adoption behavior of individual users is also skewed to 0. The distribution of play time is somewhat uniformly distributed in log sense. That is, a considerable proportion of players, 29.3%, consumes time spent on games more than 100 hours. The above table shows that distribution of sales and playing time by title is very skewed to 0. That is, a small number of titles occupy most of the adoption and play time of users.
+
+```{r echo=FALSE, fig.height=4, fig.width=10, message=FALSE, warning=FALSE, paged.print=FALSE}
+p1 <- plot_hist(n_purchased, df_title, logten=T, "Dist. of Adoption by Title")
+p2 <- plot_hist(time, df_title, logten=T, "Dist. of Playing Time by Title")
+
+p1 + p2
+```
+
+### Playing over adoption
+
+To answer the earlier question on the identity of STEAM, the number of titles played over the adopted is calculated for each player. Below figures show that 42.3% of users play all of the games adopted. 65.6% of players play more than half of their adoption.  
+
+```{r echo=FALSE, fig.height=4, fig.width=10, message=FALSE, warning=FALSE, paged.print=FALSE}
+p1 <- plot_hist(sh_play, df_id, logten=F, "Dist. of Playing over Adoption I")
+p2 <- plot_hist(sh_play, df_id %>% filter(between(sh_play, 0.01, 0.99)), logten=F, "Dist. of Playing over Adoption II")
+
+p1 + p2
+```
+
+In conclusion, STEAM as the platform only for collecting games is not an adequate statement for its users. This impression comes from the selective memory of players who have some of the unplayed titles.
+
+# The Pattern of Play Time for Top Games 
+
+In exploring data interesting one is found. For the top 20 adopted games, distribution of (log-transformed) play time is plotted. Some games have an extremely long tail, which means that most or considerable proportion of their players play heavily. Specifically, "Counter-Strike: Global Offensive", "The Elder Scrolls V Skyrim", "Sid Meiser's Civilization V" are among them.
+
+```{r fig.height=12, fig.width=12, message=FALSE, warning=FALSE, paged.print=FALSE}
+dfa %>% count(title, sort=T) %>% slice(1:20) %>% mutate(rank=row_number()) %>% select(-n) -> title_top
+
+dfa %>% 
+  filter(title %in% title_top$title) %>% 
+  left_join(title_top, by = c('title')) %>% 
+  ggplot() +
+  aes(x = log10(time+1), y = fct_reorder(title, 1/rank)) +
+  geom_density_ridges(jittered_points = T, point_alpha=0.1) +
+  theme_bw(base_size = 11) +
+  labs(y = "Title by rank of sales") + 
+  labs(title = "Play Time Pattern of Top-adopted STEAM Titles")
+```
+
+# Appendix 
+
+Tables for the top 20 titles and players are as follows: 
+
+## Play time by individual players 
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+df_id %>% arrange(desc(total_time)) %>% slice(1:20) %>% select(-id) %>% 
+  kable() %>% kable_styling()
+```
+
+
+## Adoption by individual players 
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+df_id %>% arrange(desc(n_purchased)) %>% slice(1:20) %>% select(-id) %>% 
+  kable() %>% kable_styling()
+```
+
+
+## Play time by titles 
+
+```{r message=FALSE, warning=FALSE}
+df_title %>% arrange(desc(time)) %>% slice(1:20) %>% 
+  mutate(sh_time = percent(sh_time)) %>% 
+  kable() %>% kable_styling()
+```
