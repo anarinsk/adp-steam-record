@@ -17,6 +17,8 @@ here::here()
 source('code_rmd.R')
 ```
 
+### Source and data in [`r fontawesome::fa("github", fill = "steelblue")` GitHub](https://github.com/anarinsk/adp-steam_record)
+
 # Summary 
 
 - STEAM is not a platform only for collecting games as some assert. This impression may come from personal selective memory of such a behavior. 
