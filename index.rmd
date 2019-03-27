@@ -3,10 +3,13 @@ title: "Analysis of the Adoption and Playing on STEAM"
 date: "2019-03-26 (current version in `r format(Sys.time(), '%Y-%m-%d')`)"
 author: Jun-Sok Huhh (anarinsk@gmail)
 output:
-  html_document:
-    theme: sandstone
-    toc: true
-    toc_float: true
+  rmdformats::readthedown:
+    self_contained: true
+    highlight: kate
+    thumbnails: true 
+    lightbox: true 
+    #toc: true
+    #toc_float: true
 ---
 
 ```{r include=FALSE}
@@ -57,7 +60,7 @@ c("n_purchased", "n_played", "total_time", "sh_play") %>%
 
 Adoption behavior of individual users is also skewed to 0.[^adoption] The distribution of play time is somewhat uniformly distributed in log sense. That is, a considerable proportion of players, 29.3%, consumes time spent on games more than 100 hours. The above table shows that distribution of sales and playing time by title is very skewed to 0. That is, a small number of titles occupy most of the adoption and play time of users.
 
-[^adoption]: Instead of purchasing, we use adoption as users' behavior to choose games with or without paying. As there are many free-to-play games In our sampling, adoption is more proper in our discussion. 
+[^adoption]: Instead of purchasing, we use adoption as users' behavior to choose games with or without paying. As there are many free-to-play games In our data sample, adoption is more proper in our discussion. 
 
 ```{r echo=FALSE, fig.height=4, fig.width=10, message=FALSE, warning=FALSE, paged.print=FALSE}
 p1 <- plot_hist(n_purchased, df_title, logten=T, "Dist. of Adoption by Title")
