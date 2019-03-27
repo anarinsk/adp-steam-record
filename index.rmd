@@ -1,7 +1,7 @@
 ---
 title: "Analysis of the Adoption and Playing on STEAM"
 date: "2019-03-26 (current version in `r format(Sys.time(), '%Y-%m-%d')`)"
-author: Jun-Sok Huhh (anarinsk@gmail)
+author: 'Jun-Sok Huhh [`r fontawesome::fa("envelope", fill="white", height=12)`](mailto:anarinsk@gmail.com) [`r fontawesome::fa("home", fill="white", height=12)`](http://lostineconomics.com) [`r fontawesome::fa("github", fill="white", height=12)`](http://github.com/anarinsk)' 
 output:
   rmdformats::readthedown:
     self_contained: true
