@@ -1,5 +1,7 @@
-librarian::shelf(here, ggridges, rlang, tidyverse, magrittr, stringr, knitr, kableExtra, scales, thomasp85/patchwork)
-
+librarian::shelf(here, ggridges, rlang, 
+                 tidyverse, magrittr, stringr, knitr, kableExtra, 
+                 scales, thomasp85/patchwork, latex2exp, 
+                 rmdformats, rstudio/fontawesome)
 
 ### Load df 
 

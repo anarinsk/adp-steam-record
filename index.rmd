@@ -1,18 +1,22 @@
 ---
 title: "Analysis of the Adoption and Playing on STEAM"
 date: "2019-03-26 (current version in `r format(Sys.time(), '%Y-%m-%d')`)"
-author: Jun-Sok Huhh (anarinsk@gmail)
+author: 'Jun-Sok Huhh &ensp; [`r fontawesome::fa("envelope", fill="white", height=12)`](mailto:anarinsk@gmail.com) [`r fontawesome::fa("home", fill="white", height=12)`](http://lostineconomics.com) [`r fontawesome::fa("github", fill="white", height=12)`](http://github.com/anarinsk)' 
 output:
-  html_document:
-    theme: sandstone
-    toc: true
-    toc_float: true
+  rmdformats::readthedown:
+    self_contained: true
+    highlight: kate
+    thumbnails: true 
+    lightbox: true 
+    includes: 
+      before_body: header.html
+    #toc: true
+    #toc_float: true
 ---
 
 ```{r include=FALSE}
 here::here()
 source('code_rmd.R')
-#
 ```
 
 # Summary 
@@ -56,7 +60,9 @@ c("n_purchased", "n_played", "total_time", "sh_play") %>%
   map_df(function(x){get_unitsummary(df_id, x)}) %>% kable() %>% kable_styling()
 ```
 
-Adoption behavior of individual users is also skewed to 0. The distribution of play time is somewhat uniformly distributed in log sense. That is, a considerable proportion of players, 29.3%, consumes time spent on games more than 100 hours. The above table shows that distribution of sales and playing time by title is very skewed to 0. That is, a small number of titles occupy most of the adoption and play time of users.
+Adoption behavior of individual users is also skewed to 0.[^adoption] The distribution of play time is somewhat uniformly distributed in log sense. That is, a considerable proportion of players, 29.3%, consumes time spent on games more than 100 hours. The above table shows that distribution of sales and playing time by title is very skewed to 0. That is, a small number of titles occupy most of the adoption and play time of users.
+
+[^adoption]: Instead of purchasing, we use adoption as users' behavior to choose games with or without paying. As there are many free-to-play games In our data sample, adoption is more proper in our discussion. 
 
 ```{r echo=FALSE, fig.height=4, fig.width=10, message=FALSE, warning=FALSE, paged.print=FALSE}
 p1 <- plot_hist(n_purchased, df_title, logten=T, "Dist. of Adoption by Title")
@@ -72,6 +78,42 @@ To answer the earlier question on the identity of STEAM, the number of titles pl
 ```{r echo=FALSE, fig.height=4, fig.width=10, message=FALSE, warning=FALSE, paged.print=FALSE}
 p1 <- plot_hist(sh_play, df_id, logten=F, "Dist. of Playing over Adoption I")
 p2 <- plot_hist(sh_play, df_id %>% filter(between(sh_play, 0.01, 0.99)), logten=F, "Dist. of Playing over Adoption II")
+
+p1 + p2
+```
+
+### Correlation between adoption and share of play
+
+If the size of adoption is correlated with the share of play, some group of users might consider STEAM as the collecting-only platform. To check this point, the size of adoption and the share of play are plotted. The left panel of the below is plotted to the adoption level of $10^{1.5}(\approx 31.62)$ with some arbitrary noise. The right panel is plotted with the log-transformed adoption level. 
+
+```{r echo=FALSE, fig.height=4, fig.width=10, message=FALSE, warning=FALSE, paged.print=FALSE}
+#
+p1 <- df_id %>% 
+  mutate(
+    purchased_rescaled1 = (n_purchased - min(n_purchased)) / min(n_purchased), 
+    purchased_rescaled2 = log10(n_purchased)
+  ) %>% 
+  filter(
+    between(purchased_rescaled2, 0, 1.5)
+  ) %>% 
+  ggplot() + 
+  aes(x=n_purchased, y=sh_play) +
+  geom_jitter(height = 0.1) + 
+  labs(title = TeX("Adoption level $\\leq 10^{1.5}$"))
+
+p2 <- df_id %>% 
+  mutate(
+    purchased_rescaled1 = (n_purchased - min(n_purchased)) / min(n_purchased), 
+    purchased_rescaled2 = log10(n_purchased)
+  ) %>% 
+  filter(
+    between(purchased_rescaled2, 1.500001, 3)
+  ) %>% 
+  ggplot() + 
+  aes(x=log10(n_purchased), y=sh_play) +
+  geom_point() + 
+  geom_smooth(method='lm') + 
+  labs(title = TeX("Adoption level $>10^{1.5}$"))
 
 p1 + p2
 ```
