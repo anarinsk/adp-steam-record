@@ -17,7 +17,7 @@ here::here()
 source('code_rmd.R')
 ```
 
-### Source and data in [`r fontawesome::fa("github", fill = "steelblue")` GitHub](https://github.com/anarinsk/adp-steam_record)
+### Source and data in [`r fontawesome::fa("github", fill = "steelblue")` GitHub](https://github.com/anarinsk/adp-steam-record)
 
 # Summary 
 
