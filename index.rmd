@@ -46,7 +46,7 @@ c("n_adopted", "time") %>% map_df(thefunction) %>% kable() %>% kable_styling()
 
 The above table shows that distribution of sales and playing time by title is very skewed to 0. That is, a small number of titles occupy most of the adoption and playing time of users. Consult below two figures. 
 
-```{r echo=FALSE, fig.height=4, fig.width=10, message=FALSE, warning=FALSE, paged.print=FALSE}
+```{r echo=FALSE, fig.height=4, fig.width=8, message=FALSE, warning=FALSE, paged.print=FALSE}
 p1 <- plot_hist(n_adopted, df_id, logten=T, "Dist. of Adoption by Individual Players")
 p2 <- plot_hist(total_time, df_id, logten=T, "Dist. of Playing Time by Individual Players")
 
@@ -65,7 +65,7 @@ Adoption behavior of individual users is also skewed to 0.[^adoption] The distri
 
 [^adoption]: Instead of using term 'purchasing,' we use 'adoption' as users' behavior to choose games with or without paying. As there are many free-to-play games in our data sample, adoption is more proper world for our discussion. 
 
-```{r echo=FALSE, fig.height=4, fig.width=10, message=FALSE, warning=FALSE, paged.print=FALSE}
+```{r echo=FALSE, fig.height=4, fig.width=8, message=FALSE, warning=FALSE, paged.print=FALSE}
 p1 <- plot_hist(n_adopted, df_title, logten=T, "Dist. of Adoption by Title")
 p2 <- plot_hist(time, df_title, logten=T, "Dist. of Playing Time by Title")
 
@@ -76,7 +76,7 @@ p1 + p2
 
 To answer the earlier question on the identity of STEAM, the number of titles played over the adopted is calculated for each player. Below figures show that 42.3% of users play all of the games adopted. 65.6% of players play more than half of their adoption.  
 
-```{r echo=FALSE, fig.height=4, fig.width=10, message=FALSE, warning=FALSE, paged.print=FALSE}
+```{r echo=FALSE, fig.height=4, fig.width=8, message=FALSE, warning=FALSE, paged.print=FALSE}
 p1 <- plot_hist(sh_play, df_id, logten=F, "Dist. of Playing over Adoption I")
 p2 <- plot_hist(sh_play, df_id %>% filter(between(sh_play, 0.01, 0.99)), logten=F, "Dist. of Playing over Adoption II")
 
@@ -87,7 +87,7 @@ p1 + p2
 
 If the size of adoption is correlated with the share of play, some group of users might consider STEAM as the collecting-only platform. To check this point, the size of adoption and the share of play are plotted. The left panel of the below is plotted to the adoption level of $10^{1.5}(\approx 31.62)$ with some arbitrary noise. The right panel is plotted with the log-transformed adoption level. 
 
-```{r echo=FALSE, fig.height=4, fig.width=10, message=FALSE, warning=FALSE, paged.print=FALSE}
+```{r echo=FALSE, fig.height=4, fig.width=8, message=FALSE, warning=FALSE, paged.print=FALSE}
 #
 p1 <- df_id %>% 
   mutate(
@@ -126,7 +126,7 @@ In conclusion, STEAM as the platform only for collecting games is not an adequat
 ## Distribution of playing time for the top 20 titles 
 In exploring data interesting one is found. For the top 20 adopted games, distribution of (log-transformed) playing time is plotted. Some games have an extremely long tail, which means that most or considerable proportion of their players play heavily. Specifically, "Counter-Strike: Global Offensive", "The Elder Scrolls V Skyrim", "Sid Meiser's Civilization V" are among them.
 
-```{r fig.height=12, fig.width=12, message=FALSE, warning=FALSE, echo=FALSE}
+```{r fig.height=6, fig.width=9, message=FALSE, warning=FALSE, echo=FALSE}
 dfa %>% count(title, sort=T) %>% slice(1:20) %>% mutate(rank=row_number()) %>% select(-n) -> title_top
 
 dfa %>% 
@@ -134,7 +134,8 @@ dfa %>%
   left_join(title_top, by = c('title')) %>% 
   ggplot() +
   aes(x = log10(time+1), y = fct_reorder(title, 1/rank)) +
-  geom_density_ridges(jittered_points = T, point_alpha=0.1) +
+  geom_density_ridges(jittered_points=T, color='steelblue', point_alpha=0.1) +
+  xlim(-0.01, 4) + 
   theme_bw(base_size = 11) +
   labs(y = "Title by rank of sales") + 
   labs(title = "Playing time Pattern of Top-adopted STEAM Titles")
@@ -143,7 +144,7 @@ dfa %>%
 ## Distribution of average playing time per title for users I 
 In a similar vein, the average playing time per title is examined by the top 20 users by adoption level. For some high-level adopting users such as 1, 7, 17, more than 3 hours are spent for many of adopted titles. A small fraction of games occupy most of playing time. 
 
-```{r fig.height=12, fig.width=12, message=FALSE, warning=FALSE, echo=FALSE}
+```{r fig.height=6, fig.width=6, message=FALSE, warning=FALSE, echo=FALSE}
 df_id %>% arrange(desc(n_adopted)) %>% 
   slice(1:20) %>% mutate(rank=row_number()) %>% select(rank, id) -> id_top_adopted
 
@@ -157,7 +158,8 @@ dfa %>%
   ) %>% 
   ggplot() +
   aes(x = log10(time+1), y = fct_reorder(as.factor(rank), 1/rank)) +
-  geom_density_ridges(jittered_points = T, point_alpha=0.1) +
+  geom_density_ridges(jittered_points = T, color='steelblue', point_alpha=0.1) +
+  xlim(-0.01, 3) + 
   theme_bw(base_size = 11) +
   labs(y = "ID by adoption level") + 
   labs(title = "Playing time Pattern of STEAM users I")
@@ -166,7 +168,7 @@ dfa %>%
 ## Distribution of average playing time per title for users II
 For the average playing time per title, some users such as 8, 9, 15, and 17 spend hours heavily on a small number of titles. Contrastingly, some such as 1, 7, and 18 are serious explorers in that they spent considerable hours on many games.
 
-```{r fig.height=12, fig.width=12, message=FALSE, warning=FALSE, echo=FALSE}
+```{r fig.height=6, fig.width=6, message=FALSE, warning=FALSE, echo=FALSE}
 df_id %>% arrange(desc(total_time)) %>% 
   slice(1:20) %>% mutate(rank=row_number()) %>% select(rank, id) -> id_top_time
 
@@ -180,7 +182,8 @@ dfa %>%
   ) %>% 
   ggplot() +
   aes(x = log10(time+1), y = fct_reorder(as.factor(rank), 1/rank)) +
-  geom_density_ridges(jittered_points = T, point_alpha=0.1) +
+  geom_density_ridges(jittered_points = T, color='steelblue', point_alpha=0.1) +
+  xlim(-0.01, 5) + 
   theme_bw(base_size = 11) +
   labs(y = "ID by total playing time") + 
   labs(title = "playing time Pattern of STEAM users II")
