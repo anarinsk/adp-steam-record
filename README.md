@@ -20,7 +20,7 @@
 
 # If You Work on Rstat 
 
-- Be sure to load `adp-steam-record.Rproj` first 
+- Be sure to load `adp-steam-record.Rproj` first in RStudio to avoid path-related issues. 
 - Install `librarian` packages before running code. 
 
 # History 
