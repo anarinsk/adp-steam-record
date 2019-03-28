@@ -10,7 +10,7 @@ dfa <- readRDS(here::here("data", "df4rmd.rds"))
 dfa %>% 
   group_by(title) %>% 
   summarise(
-    n_purchased = n(), 
+    n_adopted = n(), 
     n_played = sum(play_count > 0), 
     time = sum(time)
   ) %>% 
@@ -22,11 +22,11 @@ dfa %>%
 dfa %>% 
   group_by(id) %>% 
   summarise(
-    n_purchased = n(), 
+    n_adopted = n(), 
     n_played = sum(time >= 0.5), 
     total_time = sum(time), 
     mean_time = total_time / n_played, 
-    sh_play = n_played / n_purchased
+    sh_play = n_played / n_adopted
   ) -> df_id 
 
 ### Functions 

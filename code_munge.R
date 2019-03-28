@@ -13,20 +13,20 @@ names(df0) <- c('id', 'title', 'behavior', 'time')
 df0 %>% 
   group_by(id, title) %>% 
   summarise(
-    is_purchased = if_else("purchase" %in% behavior, T, F)
+    is_adaopted = if_else("purchase" %in% behavior, T, F)
   ) -> df1 
 
 df0 %>% 
   group_by(id,title) %>% 
   summarise(
-    purchase_count = sum(behavior == "purchase"),
+    adaopt_count = sum(behavior == "purchase"),
     play_count = sum(behavior == "play"), 
     time = sum(time[time != 1]) 
   ) -> df2
 
 df2 %>% 
   mutate(
-    is_double_purchased = if_else(purchase_count >= 2, T, F)
+    is_double_adaopted = if_else(adaopt_count >= 2, T, F)
   ) %>% 
-  select(-purchase_count) %>% 
+  select(-adaopt_count) %>% 
   ungroup() -> dfa
